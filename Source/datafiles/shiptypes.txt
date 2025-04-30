@@ -1,0 +1,82 @@
+Aframax
+Anchor Handler
+Baltimax
+BIBO
+Bulk Carrier
+Capesize
+Car Carrier
+Cement Carrier
+Chemical Carrier
+Chemical/Product Tanker
+Chinamax
+Coastal Ferry
+Coastal Tanker
+ConRo
+Container Ship
+Crude Oil Tanker
+Cruise Ship
+DP Shuttle Tanker
+Drill Ship
+Dry Bulk Carrier
+Dunkirkmax
+Ferry
+Fleximax
+FPSO
+Freighter
+FSU
+Gas Carrier
+Geared Bulker
+Gearless Bulker
+General Cargo
+GenRo
+Grab-fitted Supramax
+Grab-fitted Ultramax
+Handymax
+Handysize
+Ice Class 1A Tanker
+Kamsarmax
+Lake Freighter
+LBV
+LNGC
+LNG Tanker
+LPG Tanker
+LR1 Tanker
+LR2 Tanker
+Malaccamax
+MCV
+MR1 Tanker
+MR2 Tanker
+Multipurpose Cargo Ship
+Naval Ship
+Neo-Panamax
+Newcastlemax
+OBO Carrier
+Open Hatch
+Panamax
+Passenger Ship
+PCC
+PCTC
+Pipe Layer
+Post-Malaccamax
+Post-Panamax
+Post-Suezmax
+Product Tanker
+Q-Max
+Reefer
+Refrigerated Container
+RoPax
+RoRo
+Seawaymax
+Self-discharger
+Setouchmax
+Shuttle Tanker
+Suezmax
+Supply Vessel
+Tanker
+ULBC
+ULCC
+ULOC
+VLBC
+VLCC
+VLEC
+VLOC

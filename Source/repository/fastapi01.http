@@ -1,0 +1,18 @@
+@baseUrl = localhost:8000
+
+### Get imanapi open no auth
+GET http://{{baseUrl}}/
+Content-Type: application/json
+
+### Get uten oppgi navn
+GET http://{{baseUrl}}/items/1
+Content-Type: application/json
+
+
+### Get sende med navn
+GET http://{{baseUrl}}/items/1?name=Python
+Content-Type: application/json
+
+### Get sende med feil param
+GET http://{{baseUrl}}/items/1?namn=Python
+Content-Type: application/json

@@ -1,0 +1,215 @@
+{
+    "fastapi_jwt_class": {
+        "prefix": "fastapi_jwt_class",
+        "body": [
+            "from dataclasses import dataclass, field",
+            "import datetime",
+            "from os import getenv",
+            "import random",
+            "from typing import Annotated, Union",
+            "from fastapi import Depends, FastAPI, HTTPException, Header, Request",
+            "from pymssql import connect",
+            "import pymssql",
+            "",
+            "from jwt_token import jwt_token",
+            "from uc_repository3 import uc_repository3",
+            "from msidentity import ms_identity"
+        ],
+        "description": "fastapi_jwt_class"
+    },
+    "fastapi_jwt_class_registeruser": {
+        "prefix": "fastapi_jwt_class_registeruser",
+        "body": [
+            "@dataclass(order=True)",
+            "class RegisterUser:",
+            "    email: str = field(default=None)",
+            "    username: str = field(default=None)",
+            "    password: str = field(default=None)"
+        ],
+        "description": "fastapi_jwt_class_registeruser"
+    },
+    "fastapi_jwt_class_aspnetusers": {
+        "prefix": "fastapi_jwt_class_aspnetusers",
+        "body": [
+            "@dataclass(order=True)",
+            "class AspNetUsers:",
+            "    id: int = field(default=0)",
+            "    username: str = field(default=None)",
+            "    email: str = field(default=None)",
+            "    passwordhash: str = field(default=None)",
+            "    securitystamp: datetime.datetime = field(default=None)",
+            "    lockoutend: datetime.datetime = field(default=None)",
+            "    lockoutenabled: int = field(default=1)",
+            "    accessfailedcount: int = field(default=1)"
+        ],
+        "description": "fastapi_jwt_class_aspnetusers"
+    },
+    "fastapi_jwt_class_database": {
+        "prefix": "fastapi_jwt_class_database",
+        "body": [
+            "class Database():",
+            "    async def create_pool(self):",
+            "        self.conn = pymssql.connect(",
+            "            server=getenv(\"DOCKER_MSSQLSERVER\"), ",
+            "            user=getenv(\"DOCKER_MSSQLUSER\"), ",
+            "            password=getenv(\"DOCKER_MSSQLPW\"), ",
+            "            database=getenv(\"DOCKER_MSSQLDB\"),",
+            "            charset=\"ISO-8859-1\" # Fiks ØÆÅ problemer",
+            "        )",
+            "        print(\"pool created\")"
+        ],
+        "description": "fastapi_jwt_class_database"
+    },
+    "fastapi_jwt_create_app": {
+        "prefix": "fastapi_jwt__create_app",
+        "body": [
+            "def create_app():",
+            "",
+            "    app = FastAPI()",
+            "    db = Database()",
+            "        ",
+            "    return app",
+            "",
+            "app = create_app()",
+            "",
+            "# To debug this server",
+            "if __name__ == \"__main__\":",
+            "    import uvicorn",
+            "    uvicorn.run(app, host=\"0.0.0.0\", port=8000)"
+        ],
+        "description": "fastapi_jwt_create_app"
+    },
+    "fastapi_jwt_middleware": {
+        "prefix": "fastapi_jwt_middleware",
+        "body": [
+            "@app.middleware(\"http\")",
+            "async def db_session_middleware(request: Request, call_next):",
+            "    request.state.conn = db.conn",
+            "    response = await call_next(request)",
+            "    return response"
+        ],
+        "description": "fastapi_jwt_middleware"
+    },
+    "fastapi_jwt_startup": {
+        "prefix": "fastapi_jwt_startup",
+        "body": [
+            "@app.on_event(\"startup\")",
+            "async def startup():",
+            "    print(\"Starting up\")",
+            "    await db.create_pool()"
+        ],
+        "description": "fastapi_jwt_startup"
+    },
+    "fastapi_jwt_shutdown": {
+        "prefix": "fastapi_jwt_shutdown",
+        "body": [
+            "@app.on_event(\"shutdown\")",
+            "async def shutdown():",
+            "    # cleanup",
+            "    print(\"Shutting down\")",
+            "    pass",
+            ""
+        ],
+        "description": "fastapi_jwt_shutdown"
+    },
+    "fastapi_jwt_createtable": {
+        "prefix": "fastapi_jwt_createtable",
+        "body": [
+            "#Enable denne dersom du trenger å opprette tabellen i databasen",
+            "@app.get(\"/createtable\")",
+            "async def createtable(request: Request):   ",
+            "    cursor = request.state.conn.cursor()",
+            "    emp_repo = uc_repository3(AspNetUsers, cursor)     ",
+            "    result = emp_repo.create_table(execute=True)",
+            "    if result == 0:",
+            "        raise HTTPException(status_code=404, detail=\"Table not created\")",
+            "    return result   "
+        ],
+        "description": "fastapi_jwt_createtable"
+    },
+    "fastapi_jwt_login_user": {
+        "prefix": "fastapi_jwt_login_user",
+        "body": [
+            "@app.post(\"/login\")",
+            "async def login_user(request: Request, item: RegisterUser):",
+            "    cursor = request.state.conn.cursor()",
+            "    ",
+            "    # Hent bruker fra databasen                               ",
+            "    user_repo = uc_repository3(AspNetUsers, cursor)   ",
+            "    user = user_repo.get_by_field(\"email\", item.email)",
+            "    if len(user) != 1:",
+            "        raise HTTPException(status_code=404, detail=\"User not found\")",
+            "    ",
+            "    # Sjekk passord ",
+            "    # TODO tell opp antall ugyldige innlogginger og lås bruker på 4. forsøk",
+            "    msidentity = ms_identity()",
+            "    res = msidentity.check_password(item.password, user[0].passwordhash)",
+            "    if (res == False):",
+            "        raise HTTPException(status_code=401, detail=\"Unauthorized\")",
+            "            ",
+            "    # Lag JWT token",
+            "    jwttoken = jwt_token()",
+            "    token = jwttoken.get_jwt_token(user[0].username)                        ",
+            "    ",
+            "    return {\"token\": token}   "
+        ],
+        "description": "fastapi_jwt_login_user"
+    },
+    "fastapi_jwt_register_user": {
+        "prefix": "fastapi_jwt_register_user",
+        "body": [
+            "@app.post(\"/register\")",
+            "async def register_user(request: Request, item: RegisterUser):",
+            "    cursor = request.state.conn.cursor()",
+            "    ",
+            "    msidentity = ms_identity()",
+            "    identity_record = msidentity.generate_identity_record(item.password) ",
+            "            ",
+            "    new_user = AspNetUsers()",
+            "    new_user.username = item.username",
+            "    new_user.email = item.email",
+            "    new_user.passwordhash = identity_record",
+            "                    ",
+            "    emp_repo = uc_repository3(AspNetUsers, cursor)   ",
+            "    emp_repo.insert(new_user)",
+            "    ",
+            "    request.state.conn.commit()",
+            "    return item"
+        ],
+        "description": "fastapi_jwt_register_user"
+    },
+    "fastapi_jwt_hello": {
+        "prefix": "fastapi_jwt_hello",
+        "body": [
+            "@app.get(\"/hello\")    ",
+            "async def get_current_user(Authorization: Annotated[str | None, Header()] = None):",
+            "    ",
+            "    # Lag en generisk exception for auth (du er ikke logget inn)",
+            "    credentials_exception = HTTPException(",
+            "        status_code=401,",
+            "        detail=\"You are not authenticated, please login..\",",
+            "    )",
+            "    ",
+            "    # Sjekk om Authorization header er med skal være slik:",
+            "    # Authorization Bearer <token>",
+            "    if Authorization is None:",
+            "        raise credentials_exception",
+            "    ",
+            "    # Hent ut",
+            "    token = Authorization.split(\" \")[1]",
+            "    if token is None:",
+            "        raise credentials_exception",
+            "    ",
+            "    # Sjekk om token er gyldig",
+            "    jwttoken = jwt_token()",
+            "    tokenvalid = jwttoken.validate_jwt_token(token)  ",
+            "    if tokenvalid == False:",
+            "        raise credentials_exception",
+            "    ",
+            "    # Til slutt kan vi hente ut en claim fra tokenet og retunere",
+            "    decoded_token = jwttoken.decode_jwt_token(token)                ",
+            "    return {\"user\": decoded_token[\"user\"]} "
+        ],
+        "description": "fastapi_jwt_hello"
+    }
+}

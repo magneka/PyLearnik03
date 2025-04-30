@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "donjayamanne.python-extension-pack",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "cweijan.vscode-postgresql-client2",
+        "humao.rest-client",
+    ]
+}

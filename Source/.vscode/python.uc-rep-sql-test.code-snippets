@@ -1,0 +1,161 @@
+{
+    "uc_rep_sql_test_class": {
+        "prefix": "uc_rep_sql_test_class",
+        "body": [
+            "from os import getenv",
+            "import unittest",
+            "import datetime",
+            "import pymssql",
+            "from dataclasses import dataclass, field",
+            "from uc_repository3 import uc_repository3",
+            "",
+            "@dataclass(frozen=True, order=True)",
+            "class Allsorts:",
+            "    id: int",
+            "    name: str",
+            "    salary: float = field(default=800000)",
+            "    children: int = field(default=0)",
+            "    born: datetime.datetime = field(default=None)",
+            "",
+            "# Kopble oss mot en MSSQL database og returnere en cursor",
+            "def get_cursor():",
+            "    ",
+            "    # Koble oss mot databasen med PyMSSQL via miljøvariabler",
+            "    conn = pymssql.connect(",
+            "        server=getenv(\"DOCKER_MSSQLSERVER\"), ",
+            "        user=getenv(\"DOCKER_MSSQLUSER\"), ",
+            "        password=getenv(\"DOCKER_MSSQLPW\"), ",
+            "        database=getenv(\"DOCKER_MSSQLDB\"),",
+            "        charset=\"ISO-8859-1\" # Fiks ØÆÅ problemer",
+            "    )",
+            "",
+            "    conn.autocommit(True)",
+            "    cursor = conn.cursor()",
+            "    return cursor",
+            "",
+            "class Allsorts_sql_gen_test (unittest.TestCase):",
+            "    ",
+            "    cursor = None",
+            "    conn = None",
+            "    allsorts_repo = None",
+            "    ",
+            "    def setUp(self):        ",
+            "        self.cursor = get_cursor()        ",
+            "        self.allsorts_repo = uc_repository3(Allsorts, self.cursor)       ",
+            "",
+            "    def tearDown(self):",
+            "        #self.conn.rollback()",
+            "        pass",
+            "    ",
+            "                       ",
+            "if __name__ == '__main__':",
+            "    unittest.main()",
+            "        "
+        ],
+        "description": "uc_rep_sql_test_"
+    },
+    "uc_rep_sql_test_test_get_table_name": {
+        "prefix": "uc_rep_test_get_table_name",
+        "body": [
+            "# Sjekk at repository finner tabellnavnet",
+            "def test_get_table_name(self):",
+            "    res = self.allsorts_repo._table_name",
+            "    self.assertEqual(res, 'ALLSORTS', 'Expected table name not found.')"
+        ],
+        "description": "uc_rep_sql_test_"
+    },
+    "uc_rep_sql_test_get_all_fieldnames": {
+        "prefix": "uc_rep_test_get_all_fieldnames",
+        "body": [
+            "# Sjekk at repository finner alle feltene sine navn",
+            "def test_get_all_fieldnames(self):",
+            "    res = self.allsorts_repo._fieldnames",
+            "    expected = ['id', 'name', 'salary', 'children', 'born']",
+            "    self.assertEqual(res, expected, 'Expected all field names not found.')"
+        ],
+        "description": "uc_rep_sql_test_"
+    },
+    "uc_rep_sql_test_test_get_fields": {
+        "prefix": "uc_rep_test_test_get_fields",
+        "body": [
+            "# Sjekk at repository finner alle feltene og at de er riktig type og riktig verdi     ",
+            "def test_get_fields(self):",
+            "    res = self.allsorts_repo._fields",
+            "    expected = [",
+            "        {'name': 'id', 'py_type': 'int', 'sql_type': 'INT'}, ",
+            "        {'name': 'name', 'py_type': 'str', 'sql_type': 'VARCHAR(200)'}, ",
+            "        {'name': 'salary', 'py_type': 'float', 'sql_type': 'DECIMAL(10, 2)'}, ",
+            "        {'name': 'children', 'py_type': 'int', 'sql_type': 'INT'}, ",
+            "        {'name': 'born', 'py_type': 'datetime', 'sql_type': 'DATETIME'}",
+            "    ]",
+            "        ",
+            "    self.assertEqual(res, expected, 'Expected fields not found.')",
+            "    self.assertEqual(len(res), 5, 'Expected 5 fields.')"
+        ],
+        "description": "uc_rep_sql_test_test_get_fields"
+    },
+    "uc_rep_sql_test_test_create_table_sql": {
+        "prefix": "uc_rep_test_test_create_table_sql",
+        "body": [
+            "def test_create_table_sql(self):",
+            "    res = \" \".join(self.allsorts_repo._get_drop_and_create_table_sql().replace('\\n', '').replace('\\t', '').split())",
+            "    expected = \"IF OBJECT_ID('ALLSORTS', 'U') IS NOT NULL DROP TABLE ALLSORTS CREATE TABLE ALLSORTS ( id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, name VARCHAR(200), salary DECIMAL(10, 2), children INT, born DATETIME )\"",
+            "    self.assertEqual(res, expected, 'Expected create table sql not found.')"
+        ],
+        "description": "uc_rep_sql_test_test_create_table_sql"
+    },
+    "uc_rep_sql_test_test_insert_sql": {
+        "prefix": "uc_rep_test_test_insert_sql",
+        "body": [
+            "def test_insert_sql(self):",
+            "    res = \" \".join(self.allsorts_repo._get_insert_sql().replace('\\n', '').replace('\\t', '').split())",
+            "    expected = 'INSERT INTO ALLSORTS (name, salary, children, born) VALUES ( %(name)s, %(salary)s, %(children)s, %(born)s )'",
+            "    self.assertEqual(res, expected, 'Expected insert sql not found.')   "
+        ],
+        "description": "uc_rep_sql_test_test_insert_sql"
+    },
+    "uc_rep_sql_test_test_get_select_sql": {
+        "prefix": "uc_rep_test_test_get_select_sql",
+        "body": [
+            "# Sjekk at repository finner en select setning",
+            "def test_get_select_sql(self):",
+            "    res = \" \".join(self.allsorts_repo._get_select_sql().replace('\\n', '').replace('\\t', '').split())",
+            "    expected = 'SELECT TOP 100 id, name, salary, children, born FROM ALLSORTS'",
+            "    self.assertEqual(res, expected, 'Expected select not found.') "
+        ],
+        "description": "uc_rep_sql_test_test_get_select_sql"
+    },
+    "uc_rep_sql_test_test_get_select_by_field_sql": {
+        "prefix": "uc_rep_test_test_get_select_by_field_sql",
+        "body": [
+            "# Sjekk at repository finner en select setning med et felt lik en verdi",
+            "def test_get_select_by_field_sql(self):        ",
+            "    res = \" \".join(self.allsorts_repo._get_select_by_field_sql(\"name\", \"like\").replace('\\n', '').replace('\\t', '').split())",
+            "    expected = 'SELECT TOP 100 id, name, salary, children, born FROM ALLSORTS WHERE name like %s'",
+            "    self.assertEqual(res, expected, 'Expected select by field not found.')   "
+        ],
+        "description": "uc_rep_sql_test_test_get_select_by_field_sql"
+    },
+    "uc_rep_sql_test_test_update_sql": {
+        "prefix": "uc_rep_test_test_update_sql",
+        "body": [
+            "# Sjekk at repository finner en update setning med named parametre for alle feltene, med where på id feltet",
+            "def test_update_sql(self):",
+            "    res = \" \".join(self.allsorts_repo._get_update_sql().replace('\\n', '').replace('\\t', '').split())",
+            "    expected = 'UPDATE ALLSORTS SET name = %(name)s, salary = %(salary)s, children = %(children)s, born = %(born)s WHERE id = %(id)s'",
+            "    self.assertEqual(res, expected, 'Expected update sql not found.')"
+        ],
+        "description": "uc_rep_sql_test_test_update_sql"
+    },
+    "uc_rep_sql_test_test_delete_sql": {
+        "prefix": "uc_rep_test_test_delete_sql",
+        "body": [
+            "# Sjekk at reposiotory finner en delete setning med named parametre for id feltet",
+            "def test_delete_sql(self):",
+            "    res = \" \".join(self.allsorts_repo._get_delete_sql().replace('\\n', '').replace('\\t', '').split())",
+            "    expected = 'DELETE FROM ALLSORTS WHERE id = %(id)s'",
+            "    self.assertEqual(res, expected, 'Expected delete sql not found.')"
+        ],
+        "description": "uc_rep_sql_test_test_delete_sql"
+    }
+}

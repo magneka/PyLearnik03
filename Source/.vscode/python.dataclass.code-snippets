@@ -1,0 +1,21 @@
+{
+  "dataclass": {
+    "prefix": "dataclass",
+    "body": [
+      "from dataclasses import dataclass, field",
+      "from fastapi import FastAPI",
+      "",
+      "@dataclass(order=True)",
+      "class ${1:navn}:",
+      ""
+    ],
+    "description": "fastapi_get"
+  },
+  "dataclass_field": {
+    "prefix": "field",
+    "body": [
+      "${1:navn}: ${2:type} = field(default=${3:default_verdi})"
+    ],
+    "description": "dataclass_field"
+  }
+}

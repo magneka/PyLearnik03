@@ -1,0 +1,41 @@
+services:  
+  pylearnik_03:
+
+    environment:          
+      DOCKER_MSSQLSERVER: "mssql"
+      DOCKER_MSSQLUSER: "sa"
+      DOCKER_MSSQLPW: "mssql1Ipw"
+      DOCKER_MSSQLDB: "master"
+      
+    build:
+      context: .
+      dockerfile: Dockerfile
+      
+    container_name: pylearnik_03
+
+    tty: true 
+
+    ports:
+      - 8000:8000
+
+    # Mount host directories to container directories
+    volumes:
+      - './Source:/home/learniken/source:rw'
+
+  mssql:
+    #image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge
+    ports:
+      - 1433:1433
+    volumes:
+      - mssqldata:/var/lib/mssqlql/data
+      - ./mssql:/home
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=mssql1Ipw
+    working_dir: /home
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
+
+volumes:
+  #postgres-data:  
+  mssqldata:

@@ -1,0 +1,49 @@
+============ CREATE STATEMENT ===================
+    IF OBJECT_ID('ALLSORTS', 'U') IS NOT NULL 
+        DROP TABLE ALLSORTS 
+    CREATE TABLE ALLSORTS (
+        id INT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
+        name VARCHAR(200), 
+        salary DECIMAL(10, 2), 
+        children INT, 
+        born DATETIME 
+    )
+
+
+============ INSERT STATEMENT ===================
+    INSERT INTO ALLSORTS
+        (name, salary, children, born) 
+    VALUES 
+        ( %(name)s, %(salary)s, %(children)s, %(born)s )
+
+
+============ SELECT ALL STATEMENT ===================
+    SELECT TOP 100 
+        id, name, salary, children, born 
+    FROM ALLSORTS
+
+
+============ SELECT WHERE STATEMENT ===================
+    SELECT TOP 100 
+        id, name, salary, children, born 
+    FROM 
+        ALLSORTS 
+    WHERE 
+        name like %s
+
+
+============ UPDATE STATEMENT ===================
+    UPDATE ALLSORTS 
+    SET 
+        name = %(name)s, 
+        salary = %(salary)s, 
+        children = %(children)s, 
+        born = %(born)s 
+    WHERE 
+        id = %(id)s
+
+
+============ DELETE STATEMENT ===================
+    DELETE 
+    FROM ALLSORTS 
+    WHERE id = %(id)s

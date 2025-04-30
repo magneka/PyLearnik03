@@ -1,0 +1,106 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "cwd": "${fileDirname}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python Debugger: Current TEST File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${fileDirname}",
+      "args": [
+        "--unittest"
+      ],
+    },    
+    {
+      "command": "jupyter notebook --allow-root",
+      "name": "Run Jupyter notebook",
+      "request": "launch",
+      "cwd": "/home/learniken/source",
+      "type": "node-terminal"
+    },
+    {
+      "command": "jupyter lab --allow-root",
+      "name": "Run Jupyter Lab",
+      "request": "launch",
+      "cwd": "/home/learniken/source",
+      "type": "node-terminal"
+    },    
+    {
+      "name": "Python: FastAPI current",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "uvicorn",
+        "fastapi:main:app",
+        "--host",
+        "0.0.0.0", 
+        "--port", 
+        "8000",
+        "--reload",
+      ],
+      "jinja": true
+    },
+    {
+      "name": "Python: FastAPI2 current",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "uvicorn",
+        "main:app",
+        "--host",
+        "0.0.0.0", 
+        "--port", 
+        "8000",
+        "--reload",
+      ],
+      "jinja": true
+    },
+    {
+      "name": "Python: FastAPI1",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/fastapi/main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "uvicorn",
+        "fastapi:main:app",
+        "--reload",
+      ],
+      "jinja": true
+    },
+    {
+      "name": "Python: FastAPI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/fastapi/main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "run",
+        "uvicorn",
+        "fastapi:main:app",
+        "--reload",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000"
+      ],
+      "jinja": true
+    }
+  ]
+}

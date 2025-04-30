@@ -1,0 +1,214 @@
+{
+    "Allsorts_query_tests": {
+        "prefix": "Allsorts_query_tests",
+        "body": [
+            "import json",
+            "from os import getenv",
+            "import random",
+            "import time",
+            "import unittest",
+            "import datetime",
+            "import pymssql",
+            "from dataclasses import dataclass, field",
+            "from uc_faker import UcFaker",
+            "from uc_repository3 import uc_repository3",
+            "",
+            "@dataclass(frozen=False, order=True)",
+            "class Allsorts:",
+            "    id: int",
+            "    name: str",
+            "    salary: float = field(default=800000)",
+            "    children: int = field(default=0)",
+            "    born: datetime.datetime = field(default=None)",
+            "",
+            "# Kopble oss mot en MSSQL database og returnere en cursor",
+            "def get_cursor():",
+            "    ",
+            "    # Koble oss mot databasen med PyMSSQL via miljøvariabler",
+            "    conn = pymssql.connect(",
+            "    server=getenv(\"DOCKER_MSSQLSERVER\"), ",
+            "    user=getenv(\"DOCKER_MSSQLUSER\"), ",
+            "    password=getenv(\"DOCKER_MSSQLPW\"), ",
+            "    database=getenv(\"DOCKER_MSSQLDB\"),",
+            "    charset=\"ISO-8859-1\" # Fiks ØÆÅ problemer",
+            "    )",
+            "",
+            "    conn.autocommit(True)",
+            "    cursor = conn.cursor()",
+            "    return cursor",
+            "",
+            "class Allsorts_query_tests(unittest.TestCase):",
+            "    ",
+            "    cursor = None",
+            "    conn = None",
+            "    allsorts_repo = None",
+            "    uc_faker = None",
+            "    ",
+            "    def setUp(self):        ",
+            "    self.cursor = get_cursor()        ",
+            "    self.allsorts_repo = uc_repository3(Allsorts, self.cursor) ",
+            "    self.uc_faker = UcFaker()",
+            "        ",
+            "    def tearDown(self):",
+            "    #self.conn.rollback()",
+            "    #self.conn.close()",
+            "    pass            ",
+            "    ",
+            "    ",
+            "if __name__ == '__main__':",
+            "    unittest.main()"
+        ],
+        "description": "Allsorts_query_tests"
+    },
+    "Allsorts_query_tests_test_create_table": {
+        "prefix": "Allsorts_test_create_table",
+        "body": [
+            "# Test at databasen er tom etter createdb",
+            "def test_create_table(self):",
+            "    cr_res = self.allsorts_repo.create_table(execute=True)        ",
+            "    recs = self.allsorts_repo.get_all()        ",
+            "    self.assertTrue(len(recs) == 0, 'Expected table to be empty.')"
+        ],
+        "description": "Allsorts_query_tests"
+    },
+    "Allsorts_query_tests_insert_some_records": {
+        "prefix": "Allsorts_insert_some_records",
+        "body": [
+            "def insert_some_records(self):",
+            "    self.allsorts_repo.create_table(execute=True)",
+            "    record1 = Allsorts(None, \"Billemann\", 800000.20, 1, datetime.date(2021, 12, 25))",
+            "    record2 = Allsorts(None, \"Bollemann\", 400000.20, 2, datetime.date(2022, 12, 25))",
+            "    record3 = Allsorts(None, \"Pompel\", 300000.20, 5, datetime.date(2023, 12, 25))",
+            "    self.allsorts_repo.insert(record1)",
+            "    self.allsorts_repo.insert(record2)",
+            "    self.allsorts_repo.insert(record3)      "
+        ],
+        "description": "Allsorts_query_tests_insert_some_records"
+    },
+    "Allsorts_query_test_insert": {
+        "prefix": "Allsorts_test_insert",
+        "body": [
+            "# Sjekk at insert fungerer",
+            "def test_insert(self):",
+            "    self.allsorts_repo.create_table(execute=True)",
+            "    record = Allsorts(1, \"Birger\", 800000.20, 2, datetime.date(2022, 12, 25))",
+            "    self.allsorts_repo.insert(record)",
+            "    recs = self.allsorts_repo.get_all()",
+            "    ",
+            "    self.assertTrue(len(recs) == 1, 'Expected one record.')   "
+        ],
+        "description": "Allsorts_query_tests_insert_some_records"
+    },
+    "Allsorts_test_update": {
+        "prefix": "Allsorts_test_update",
+        "body": [
+            "# Sjekk at update fungerer",
+            "def test_update(self):",
+            "    self.allsorts_repo.create_table(execute=True)",
+            "    record = Allsorts(1, \"Birger\", 800000.20, 2, datetime.date(2022, 12, 25))",
+            "    self.allsorts_repo.insert(record)",
+            "    record.name = \"Birger Birgersen\"",
+            "    self.allsorts_repo.update(record)",
+            "    recs = self.allsorts_repo.get_all()",
+            "    ",
+            "    # Vi får en array tilbake        ",
+            "    updatedRec = recs[0]",
+            "    ",
+            "    self.assertTrue(updatedRec.name == \"Birger Birgersen\", 'Expected name to be updated.') "
+        ],
+        "description": "Allsorts_test_update"
+    },
+    "Allsorts_test_delete": {
+        "prefix": "Allsorts_test_delete",
+        "body": [
+            "# Sjekk at delete fungerer",
+            "def test_delete(self):",
+            "    self.allsorts_repo.create_table(execute=True)",
+            "    record = Allsorts(1, \"Birger\", 800000.20, 2, datetime.date(2022, 12, 25))",
+            "    self.allsorts_repo.insert(record)",
+            "    self.allsorts_repo.delete(record)",
+            "    recs = self.allsorts_repo.get_all()",
+            "    ",
+            "    self.assertTrue(len(recs) == 0, 'Expected table to be empty.')"
+        ],
+        "description": "Allsorts_test_delete"
+    },
+    "Allsorts_test_getbyfield": {
+        "prefix": "Allsorts_test_getbyfield",
+        "body": [
+            "# Sjekk at get by field fungerer",
+            "def test_getbyfield(self):",
+            "    self.insert_some_records()         ",
+            "    recs = self.allsorts_repo.get_by_field(\"name\", \"bollemann\")        ",
+            "    self.assertTrue(len(recs) == 1, 'Expected one record.')"
+        ],
+        "description": "Allsorts_test_getbyfield"
+    },
+    "Allsorts_test_getby_date_field": {
+        "prefix": "Allsorts_test_getby_date_field",
+        "body": [
+            "def test_getby_date_field(self):",
+            "    self.insert_some_records()         ",
+            "    recs = self.allsorts_repo.get_by_field(\"born\", datetime.date(2022, 12, 25))        ",
+            "    self.assertTrue(len(recs) == 1, 'Expected one record.')"
+        ],
+        "description": "Allsorts_test_getby_date_field"
+    },
+    "Allsorts_test_getbyfield_wildcard": {
+        "prefix": "Allsorts_test_getbyfield_wildcard",
+        "body": [
+            "# Sjekk at get by field fungerer med wildcard",
+            "def test_getbyfield_wildcard(self):",
+            "    self.insert_some_records()         ",
+            "    recs = self.allsorts_repo.get_by_field(\"name\", \"b%\")        ",
+            "    self.assertTrue(len(recs) == 2, 'Expected two records.') 1, 'Expected one record.')"
+        ],
+        "description": "Allsorts_test_getbyfield_wildcard"
+    },
+    "Allsorts_test_getbyfield_greater": {
+        "prefix": "Allsorts_test_getbyfield_greater",
+        "body": [
+            "def test_getbyfield_greater(self):        ",
+            "    self.insert_some_records()                            ",
+            "    recs = self.allsorts_repo.get_by_field(\"born\", datetime.date(2022, 1, 1) , \">\")        ",
+            "    self.assertTrue(len(recs) == 2, 'Expected two records.')"
+        ],
+        "description": "Allsorts_test_getbyfield_greater"
+    },
+    "Allsorts_test_getbyfield_less": {
+        "prefix": "Allsorts_getbyfield_less",
+        "body": [
+            "def test_getbyfield_less(self):        ",
+            "    self.insert_some_records()         ",
+            "    recs = self.allsorts_repo.get_by_field(\"born\", datetime.date(2022, 1, 1) , \"<\")        ",
+            "    self.assertTrue(len(recs) == 1, 'Expected one record.')"
+        ],
+        "description": "Allsorts_test_getbyfield_less"
+    },
+    "Allsorts_test_bulk_insert": {
+        "prefix": "Allsorts_test_bulk_insert",
+        "body": [
+            "# Insert 1_000_000 records på 17 sekunder, 10 000 på 0.5s",
+            "def test_bulk_insert(self):",
+            "    self.allsorts_repo.create_table(execute=True)",
+            "    ",
+            "    data = []",
+            "    records = 1_000",
+            "    for i in range(records):            ",
+            "        data.append((",
+            "            None, ",
+            "            self.uc_faker.get_random_fullname(),",
+            "            random.randint(40, 99) * 10000, ",
+            "            random.randint(0, 5), ",
+            "            datetime.datetime(random.randint(1940, 2001), random.randint(1, 12), random.randint(1, 28))))",
+            "     ",
+            "    start_time = time.time()",
+            "    self.allsorts_repo.begin_transaction()    ",
+            "    self.allsorts_repo.bulk_insert(data)",
+            "    self.allsorts_repo.commit_transaction()       ",
+            "    end_time = time.time()",
+            "    print(f\"Inserted {records} Elapsed time:\", end_time - start_time, \"seconds\")"
+        ],
+        "description": "Allsorts_test_bulk_insert"
+    }
+}

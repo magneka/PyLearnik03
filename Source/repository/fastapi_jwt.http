@@ -1,0 +1,77 @@
+@baseUrl = localhost:8000
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiS1x1MDBlNXJlIEtuYWxsIiwiYXVkIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSIsImlzcyI6Imh0dHBzOi8vZXhhbXBsZS5jb20iLCJpYXQiOjE3NDYwMDM3MjQsImV4cCI6MTc0NjAwNzMyNH0.pFLzYjy8lPHNftojo1gs9MQIpCXcJN0FUCd5NpHdRGs
+@invtoken = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJc2VyIjoiTWFnbmUgQWx2aGVpbSIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20iLCJpc3MiOiJodHRwczovL2V4YW1wbGUuY29tIiwiaWF0IjoxNzQ1ODQ4OTY5LCJleHAiOjE3NDU4NTI1Njl9.GJpXkSDlbhqVGdvxNheCuMCg_lCOMB9mCwEI1CuYivM
+
+### Create table
+GET http://{{baseUrl}}/createtable HTTP/1.1
+
+### register user
+POST http://{{baseUrl}}/register HTTP/1.1
+content-type: application/json
+
+{
+    "email": "kåre@knall.no",
+    "username": "Kåre Knall",
+    "password": "Password123!"
+}
+
+### login user  
+POST http://{{baseUrl}}/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "kåre@knall.no",
+    "password": "Password123!"
+}
+
+### register user2
+POST http://{{baseUrl}}/register HTTP/1.1
+content-type: application/json
+
+{
+    "email": "magne@alvheim.no",
+    "username": "Magne Alvheim",
+    "password": "Password123!"
+}
+
+### login user  
+POST http://{{baseUrl}}/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "magne@alvheim.no",
+    "password": "Password123!"
+}
+
+### login user  
+POST http://{{baseUrl}}/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "magne@alvheim.no",
+    "password": "!123Password"
+}
+
+### login user  
+POST http://{{baseUrl}}/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "magne@alvheim.com",
+    "password": "!123Password"
+}
+
+### access protected route
+GET http://{{baseUrl}}/hello HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+
+
+### access protected route invalid token
+GET http://{{baseUrl}}/hello HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{invtoken}}
+
+
+

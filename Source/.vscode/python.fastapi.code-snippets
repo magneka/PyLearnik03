@@ -1,0 +1,25 @@
+{
+  "fastapi_empty": {
+    "prefix": "fastapi_empty",
+    "body": [
+      "from typing import Union",
+      "from fastapi import FastAPI",
+      "",
+      "# To debug this server",
+      "if __name__ == \"__main__\":",
+      "    import uvicorn",
+      "    uvicorn.run(app, host=\"0.0.0.0\", port=8000)"
+    ],
+    "description": "fastapi_empty"
+  },
+  "fastapi_get": {
+    "prefix": "fastapi_get",
+    "body": [
+      "@app.get(\"/${1:url}\")",
+      "def ${2:metode}():    ",
+      "    return {\"${3:example}\": \"${4:example}\"}",
+      ""
+    ],
+    "description": "fastapi_get"
+  }
+}

@@ -1,0 +1,24 @@
+pydapper==0.10.0
+psycopg[binary, pool]==3.2.3
+psycopg2-binary==2.9.10
+pymssql==2.3.2
+pymysql-pool==0.4.6
+uvicorn==0.34.0
+pillow==11.0.0
+faker==33.1.0
+gTTS==2.5.4
+jupyterlab
+scipy
+notebook
+matplotlib
+pytest
+numba
+cowsay
+
+#pyspark==3.5.4
+#pandas==2.2.3
+#scikit-learn==1.6.0
+
+fastapi==0.99.1
+fastapi_jwt_auth==0.5.0
+#pydantic==1.10.11 

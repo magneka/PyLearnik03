@@ -1,0 +1,290 @@
+{
+	// Place your snippets for python here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"Repository3": {
+		"prefix": "uc_repository3",
+		"body": [
+			"from dataclasses import fields",
+			"",
+			"# =============================================================================",
+			"# Repository class  ",
+			"# =============================================================================",
+			"class uc_repository3:",
+			"",
+			"    __cursor = None",
+			"    _table_name = None;",
+			"    _fieldnames = None;",
+			"    _fields = None;",
+			"    ",
+			"    # Hashmap for å slå opp python datatype til korresponderende SQL datatype",
+			"    _py_to_sql_types = {\"int\": \"INT\", \"str\": \"VARCHAR(200)\", \"float\": \"DECIMAL(10, 2)\", \"datetime\": \"DATETIME\"}",
+			"    ",
+			"    # Hjelpefunksjon for å lage en klasse med feltnavn, python type og sql type",
+			"    def _to_fld_class(self, fld):                ",
+			"        return {",
+			"            \"name\": fld.name, ",
+			"            \"py_type\": fld.type.__name__, ",
+			"            \"sql_type\": self._py_to_sql_types[fld.type.__name__]",
+			"        }",
+			"    ",
+			"    ",
+			"# =============================================================================",
+			"# End Repository class  ",
+			"# =============================================================================",
+			""
+		],
+		"description": "Repository3"
+	},
+	"Repositoryc3_constructor": {
+		"prefix": "uc_repository3_constructor",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# Constructror, tar inn en instance av en dataclass og database connections",
+			"# -------------------------------------------------------------------------",
+			"def __init__(self, dataclass, cursor):",
+			"    self.dataclass = dataclass",
+			"    self.__cursor = cursor ",
+			"    self._table_name = dataclass.__name__.upper()",
+			"    self._fieldnames = [f.name for f in fields(dataclass)]",
+			"    self._fields = [self._to_fld_class(p) for p in fields(dataclass)]"
+		],
+		"description": "Repositoryc3_constructor"
+	},
+	"Repositoryc3_get_drop_and_create_table_sql": {
+		"prefix": "uc_repository3_get_drop_and_create_table_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# Sånn ser create table ut:",
+			"# IF OBJECT_ID('employees', 'U') IS NOT NULL",
+			"#   DROP TABLE employees",
+			"# CREATE TABLE employees (",
+			"#    id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,",
+			"#    colonnenavn datatype",
+			"#    ...",
+			"# )",
+			"# -------------------------------------------------------------------------",
+			"def _get_drop_and_create_table_sql(self):",
+			"    delimiter = ', \\n'",
+			"    # TODO: create for alle feltene i self.fields unntatt første",
+			"    fields_list = (delimiter).join()",
+			"    ",
+			"    # Da kan vi lage et create statement",
+			"    sql = f\"\"\"",
+			"    IF OBJECT_ID('{self._table_name}', 'U') IS NOT NULL",
+			"        DROP TABLE {self._table_name}",
+			"    CREATE TABLE ",
+			"       -- TODO: her skal inn kode for id feltet, første i self._fields",
+			"       -- TODO: her skal de øvrige feltene inn",
+			"    )",
+			"    \"\"\" ",
+			"    return sql"
+		],
+		"description": "Repositoryc3_get_drop_and_create_table_sql"
+	},
+	"Repositoryc3_create_table": {
+		"prefix": "uc_repository3_create_table",
+		"body": [
+			"def create_table(self, execute=False):                              ",
+			"    if (execute):  ",
+			"        #TODO: Execute sql metoder",
+			"        return True",
+			"    return False"
+		],
+		"description": "Repositoryc3_create_table"
+	},
+	"Repositoryc3__get_insert_sql": {
+		"prefix": "uc_repository3_get_insert_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# Insert rader i tabellen",
+			"# -------------------------------------------------------------------------",
+			"def _get_insert_sql(self):",
+			"    sql = f\"\"\"",
+			"        INSERT INTO {self._table_name} ...",
+			"        VALUES (",
+			"            ..",
+			"        )\"\"\"",
+			"    return sql"
+		],
+		"description": "Repositoryc3__get_insert_sql"
+	},
+	"Repositoryc3_insert": {
+		"prefix": "uc_repository3_insert",
+		"body": [
+			"def insert(self, dcl_instance):",
+			"    sql = self._get_insert_sql()",
+			"    print (\"inserting: \", dcl_instance.__dict__)",
+			"    self.__cursor.execute(sql, dcl_instance.__dict__)",
+			"    id = self.__cursor.lastrowid        ",
+			"    setattr(dcl_instance, self._fieldnames[0], self.__cursor.lastrowid)",
+			"    ",
+			"    return id"
+		],
+		"description": "Repositoryc3__get_insert_sql"
+	},
+	"Repositoryc3_get_select_sql": {
+		"prefix": "uc_repository3_get_select_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# hent alle (ihvertfall de 10 første) rader i tabellen",
+			"# -------------------------------------------------------------------------           ",
+			"def _get_select_sql(self):",
+			"    return f\"\"\"",
+			"        SELECT TOP 100 ",
+			"            ...",
+			"        FROM ",
+			"            ...\"\"\""
+		],
+		"description": "Repositoryc3_get_select_sql"
+	},
+	"Repositoryc3_get_all": {
+		"prefix": "uc_repository3_get_all",
+		"body": [
+			"# Eksponert metode som kjører select statementet",
+			"def get_all(self):",
+			"    self.__cursor.execute(self._get_select_sql())",
+			"    tuples_result = self.__cursor.fetchall() ",
+			"",
+			"    # Use the list() constructor to make a List",
+			"    # The map() function is used to apply a given function to every item of an iterable, ",
+			"    # such as a list or tuple, and returns a map object (which is an iterator).",
+			"    result = list(map(lambda t: self.dataclass(*t), tuples_result))",
+			"    return result"
+		],
+		"description": "Repositoryc3_get_all"
+	},
+	"Repositoryc3_get_select_by_field_sql": {
+		"prefix": "uc_repository3_get_select_by_field_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# hent rader basert på et vilkår",
+			"# -------------------------------------------------------------------------",
+			"def _get_select_by_field_sql (self, fieldname, sqlOperator=\"=\"):",
+			"    sql = f\"\"\"",
+			"        SELECT TOP 100 ",
+			"            {...} ",
+			"        FROM ",
+			"            {self._table_name}",
+			"        WHERE ...\"\"\"",
+			"    return sql"
+		],
+		"description": "Repositoryc3_get_select_by_field_sql"
+	},
+	"Repositoryc3_get_by_field": {
+		"prefix": "uc_repository3_get_by_field",
+		"body": [
+			"def get_by_field (self, fieldname, value, sqlOperator=\"=\"):",
+			"                ",
+			"    # Dersom man har wildcards bytter vi = med like",
+			"    if isinstance(value, str) and '%' in value:",
+			"        sqlOperator = \"like\"",
+			"        ",
+			"    sql = self._get_select_by_field_sql(fieldname, sqlOperator)",
+			"    self.__cursor.execute(sql, value)     ",
+			"    ",
+			"    tuples_result = self.__cursor.fetchall()     ",
+			"    result = list(map(lambda t: self.dataclass(*t), tuples_result))",
+			"    return result  "
+		],
+		"description": "Repositoryc3_get_by_field"
+	},
+	"Repositoryc3_get_update_sql": {
+		"prefix": "uc_repository3_get_update_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# Oppdatering av rader i tabellen",
+			"# bruk %(felt)s for parameter",
+			"# -------------------------------------------------------------------------",
+			"def _get_update_sql(self):",
+			"    sql = f\"\"\"",
+			"        UPDATE {self._table_name} ",
+			"        SET ...",
+			"        WHERE ...          ",
+			"        \"\"\"",
+			"    return sql"
+		],
+		"description": "Repositoryc3_get_update_sql"
+	},
+	"Repositoryc3_update": {
+		"prefix": "uc_repository3_update",
+		"body": [
+			"def update(self, dcl_instance):",
+			"    sql = self._get_update_sql()    ",
+			"    return ..."
+		],
+		"description": "Repositoryc3_update"
+	},
+	"Repositoryc3_get_delete_sql": {
+		"prefix": "uc_repository3_get_delete_sql",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# Sletting av rader fra tab",
+			"# -------------------------------------------------------------------------",
+			"def _get_delete_sql(self):",
+			"    sql = f\"\"\"",
+			"        DELETE FROM {self._table_name}             ",
+			"        WHERE ...           ",
+			"        \"\"\"",
+			"    return sql"
+		],
+		"description": "Repositoryc3_get_delete_sql"
+	},
+	"Repositoryc3_delete": {
+		"prefix": "uc_repository3_delete",
+		"body": [
+			"def delete(self, dcl_instance): ",
+			"    sql = self._get_delete_sql()",
+			"    self.__cursor.execute(sql, dcl_instance.__dict__)",
+			"    return self.__cursor.rowcount"
+		],
+		"description": "Repositoryc3_delete"
+	},
+	"Repositoryc3_bulk_insert": {
+		"prefix": "uc_repository3_bulk_insert",
+		"body": [
+			"# -------------------------------------------------------------------------",
+			"# La oss lage en bulk insert metode",
+			"# -------------------------------------------------------------------------",
+			"def bulk_insert(self, record_array): ",
+			"    self.__cursor.connection.bulk_copy(self._table_name, record_array)"
+		],
+		"description": "Repositoryc3_bulk_insert"
+	},	
+	"Repositoryc3_begin_transaction": {
+		"prefix": "uc_repository3_begin_transaction",
+		"body": [
+			"def begin_transaction(self):",
+			"    self.__cursor.execute(\"BEGIN TRANSACTION\")"
+		],
+		"description": "Repositoryc3_begin_transaction"
+	},
+	"Repositoryc3_commit_transaction": {
+		"prefix": "uc_repository3_commit_transaction",
+		"body": [
+			"def commit_transaction(self):        ",
+			"    self.__cursor.execute(\"COMMIT TRANSACTION\")",
+			"    #self.__cursor.connection.commit()"
+		],
+		"description": "Repositoryc3_commit_transaction"
+	},
+	"Repositoryc3_rollback_transaction": {
+		"prefix": "uc_repository3_rollback_transaction",
+		"body": [
+			"def rollback_transaction(self):        ",
+			"    #self.__cursor.connection.rollback()",
+			"    self.__cursor.execute(\"ROLLBACK TRANSACTION\")"
+		],
+		"description": "Repositoryc3_rollback_transaction"
+	}
+}

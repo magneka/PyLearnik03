@@ -1,0 +1,38 @@
+{
+    "python.analysis.extraPaths": [
+        "./pydapper"
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#536c25",
+        "activityBar.background": "#536c25",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#59a0c6",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#536c25",
+        "statusBar.background": "#364618",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#536c25",
+        "statusBarItem.remoteBackground": "#364618",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#364618",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#36461899",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.remoteColor": "#364618",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    
+}

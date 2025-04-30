@@ -1,0 +1,57 @@
+@baseUrl = localhost:8000
+
+### Get imanapi open no auth
+GET http://{{baseUrl}}/
+Content-Type: application/json
+
+### Get posts short token
+GET http://{{baseUrl}}/items/1
+Content-Type: application/json
+
+### Get all employees
+GET http://{{baseUrl}}/employees
+Content-Type: application/json
+
+### Get employee
+GET http://{{baseUrl}}/employees/12000
+Content-Type: application/json
+
+### Get employee
+GET http://{{baseUrl}}/employees_random
+Content-Type: application/json
+
+### Get employee
+GET http://{{baseUrl}}/employees/byid/2001
+Content-Type: application/json
+
+### Post new employee
+POST http://{{baseUrl}}/employees HTTP/1.1
+content-type: application/json
+
+{
+    "etternavn": "Knall",
+    "fornavn": "Kåre"
+}
+
+### Update new employee
+PUT http://{{baseUrl}}/employees HTTP/1.1
+content-type: application/json
+
+{
+    "id":2001,
+    "etternavn": "Knall",
+    "fornavn": "Kåre",
+    "gatenavn": "Birkebeinergaten",
+    "husnummer": "1",
+    "postnummer": "5025",
+    "poststed": "Bergen"
+}
+
+### Update new employee
+DELETE http://{{baseUrl}}/employees HTTP/1.1
+content-type: application/json
+
+{
+    "id":2001    
+}
+
