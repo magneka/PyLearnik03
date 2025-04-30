@@ -1,0 +1,52 @@
+{
+    "fastapi01": {
+        "prefix": "fastapi01_class",
+        "body": [
+            "from dataclasses import dataclass, field",
+            "from typing import Union",
+            "from fastapi import FastAPI",
+            "",
+            "@dataclass(order=True)",
+            "class Hallo:",
+            "    melding: str = field(default=\"Hello\")",
+            "    til: str = field(default=\"Learniken\")",
+            "",
+            "# wrk -t 10 -c 10  http://localhost:8000",
+            "# Running 10s test @ http://localhost:8000",
+            "#   10 threads and 10 connections",
+            "#   Thread Stats   Avg      Stdev     Max   +/- Stdev",
+            "#     Latency    20.38ms   19.40ms 143.40ms   88.80%",
+            "#     Req/Sec    62.64     26.44    90.00     78.37%",
+            "#   6233 requests in 10.02s, 0.96MB read",
+            "# Requests/sec:    622.28",
+            "# Transfer/sec:     98.45KB",
+            "",
+            "app = FastAPI()",
+            "",
+            "# To debug this server",
+            "if __name__ == \"__main__\":",
+            "    import uvicorn",
+            "    uvicorn.run(app, host=\"0.0.0.0\", port=8000)"
+        ],
+        "description": "fastapi01"
+    },
+    "fastapi01_get_simple": {
+        "prefix": "fastapi01_get_simple",
+        "body": [
+            "@app.get(\"/\")",
+            "def read_root():",
+            "    result = Hallo()",
+            "    return result"
+        ],
+        "description": "fastapi01_get_simple"
+    },
+    "fastapi01_get_items": {
+        "prefix": "fastapi01_get_items",
+        "body": [
+            "@app.get(\"/items/{item_id}\")",
+            "def read_item(item_id: int, name: Union[str, None] = \"Ikke oppgitt\"):",
+            "    return {\"item_id\": item_id, \"name\":name}"
+        ],
+        "description": "fastapi01_get_items"
+    }
+}

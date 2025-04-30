@@ -161,7 +161,7 @@
             "def test_getbyfield_wildcard(self):",
             "    self.insert_some_records()         ",
             "    recs = self.allsorts_repo.get_by_field(\"name\", \"b%\")        ",
-            "    self.assertTrue(len(recs) == 2, 'Expected two records.') 1, 'Expected one record.')"
+            "    self.assertTrue(len(recs) == 2, 'Expected two records.')"
         ],
         "description": "Allsorts_test_getbyfield_wildcard"
     },

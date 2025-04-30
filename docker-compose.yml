@@ -37,5 +37,4 @@ services:
     command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
 
 volumes:
-  #postgres-data:  
   mssqldata:
